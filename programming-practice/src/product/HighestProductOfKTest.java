@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.util.stream.IntStream;
+
 import org.junit.Test;
 
 public class HighestProductOfKTest {
@@ -143,6 +145,15 @@ public class HighestProductOfKTest {
 		return highestProducts[k - 1];
 	}
 
+	private int[] initialiseProducts(int[] arrayOfInts, int k) {
+		int[] products = new int[k];
+		products[0] = arrayOfInts[0];
+		for (int i = 1; i < products.length; i++) {
+			products[i] = products[i - 1] * arrayOfInts[i];
+		}
+		return products;
+	}
+
 	private void calculateHighestAndLowestProducts(int[] arrayOfInts, int k, int[] highestProducts,
 			int[] lowestProducts) {
 		for (int i = 1; i < arrayOfInts.length; i++) {
@@ -153,15 +164,6 @@ public class HighestProductOfKTest {
 			}
 			calculateHighestAndLowestIntSoFar(arrayOfInts[i], highestProducts, lowestProducts);
 		}
-	}
-
-	private int[] initialiseProducts(int[] arrayOfInts, int k) {
-		int[] products = new int[k];
-		products[0] = arrayOfInts[0];
-		for (int i = 1; i < products.length; i++) {
-			products[i] = products[i - 1] * arrayOfInts[i];
-		}
-		return products;
 	}
 
 	private boolean isFirstKMinusOneElement(int k, int i) {
@@ -184,22 +186,10 @@ public class HighestProductOfKTest {
 	}
 
 	private int maxOf(int... ints) {
-		int maxSoFar = ints[0];
-		for (int i : ints) {
-			if (i > maxSoFar) {
-				maxSoFar = i;
-			}
-		}
-		return maxSoFar;
+		return IntStream.of(ints).max().getAsInt();
 	}
 
 	private int minOf(int... ints) {
-		int minSoFar = ints[0];
-		for (int i : ints) {
-			if (i < minSoFar) {
-				minSoFar = i;
-			}
-		}
-		return minSoFar;
+		return IntStream.of(ints).min().getAsInt();
 	}
 }
