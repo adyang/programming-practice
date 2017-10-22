@@ -126,55 +126,43 @@ public class RectangularIntersectionTest {
 	}
 
 	private Rectangle calculateRectangularIntersection(Rectangle rect1, Rectangle rect2) {
-		if (hasIntersection(rect1, rect2)) {
-			return intersectionOf(rect1, rect2);
+		RangeOverlap xRangeOverlap = findRangeOverlap(rect1.leftX, rect1.width, rect2.leftX, rect2.width);
+		RangeOverlap yRangeOverlap = findRangeOverlap(rect1.bottomY, rect1.height, rect2.bottomY, rect2.height);
+
+		if (hasOverlapForBoth(xRangeOverlap, yRangeOverlap)) {
+			return new Rectangle(xRangeOverlap.point, yRangeOverlap.point, xRangeOverlap.length, yRangeOverlap.length);
 		} else {
 			return null;
 		}
 	}
 
-	private boolean hasIntersection(Rectangle rect1, Rectangle rect2) {
-		return hasWidthIntersect(rect1, rect2) && hasHeightIntersect(rect1, rect2);
+	private boolean hasOverlapForBoth(RangeOverlap xRangeOverlap, RangeOverlap yRangeOverlap) {
+		return xRangeOverlap != null && yRangeOverlap != null;
 	}
 
-	private boolean hasWidthIntersect(Rectangle rect1, Rectangle rect2) {
-		return rightX(rect1) > rect2.leftX && rightX(rect2) > rect1.leftX;
+	private RangeOverlap findRangeOverlap(int point1, int length1, int point2, int length2) {
+		int highestStartPoint = Math.max(point1, point2);
+		int lowestEndPoint = Math.min(point1 + length1, point2 + length2);
+
+		if (hasOverlap(highestStartPoint, lowestEndPoint)) {
+			return new RangeOverlap(highestStartPoint, lowestEndPoint - highestStartPoint);
+		} else {
+			return null;
+		}
 	}
 
-	private boolean hasHeightIntersect(Rectangle rect1, Rectangle rect2) {
-		return topY(rect1) > rect2.bottomY && topY(rect2) > rect1.bottomY;
+	private boolean hasOverlap(int startPoint, int endPoint) {
+		return endPoint > startPoint;
 	}
 
-	private Rectangle intersectionOf(Rectangle rect1, Rectangle rect2) {
-		int leftX = leftXOfIntersection(rect1, rect2);
-		int width = rightXOfIntersection(rect1, rect2) - leftX;
-		int bottomY = bottomYOfIntersection(rect1, rect2);
-		int height = topYOfIntersection(rect1, rect2) - bottomY;
-		return new Rectangle(leftX, bottomY, width, height);
-	}
+	private static class RangeOverlap {
+		public int point;
+		public int length;
 
-	private int leftXOfIntersection(Rectangle rect1, Rectangle rect2) {
-		return Math.max(rect1.leftX, rect2.leftX);
-	}
-
-	private int rightXOfIntersection(Rectangle rect1, Rectangle rect2) {
-		return Math.min(rightX(rect1), rightX(rect2));
-	}
-
-	private int bottomYOfIntersection(Rectangle rect1, Rectangle rect2) {
-		return Math.max(rect1.bottomY, rect2.bottomY);
-	}
-
-	private int topYOfIntersection(Rectangle rect1, Rectangle rect2) {
-		return Math.min(topY(rect1), topY(rect2));
-	}
-
-	private int rightX(Rectangle rect) {
-		return rect.leftX + rect.width;
-	}
-
-	private int topY(Rectangle rect) {
-		return rect.bottomY + rect.height;
+		public RangeOverlap(int point, int length) {
+			this.point = point;
+			this.length = length;
+		}
 	}
 
 	private static class Rectangle {
