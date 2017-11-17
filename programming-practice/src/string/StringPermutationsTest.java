@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StringPermutationsTest {
@@ -52,7 +51,6 @@ public class StringPermutationsTest {
 				"bdca", "cabd", "cadb", "cbad", "cbda", "cdab", "cdba", "dabc", "dacb", "dbac", "dbca", "dcab", "dcba");
 	}
 
-	@Ignore
 	@Test
 	public void givenStringWithAllSameChars_ShouldPermuteOne() {
 		assertPermute("aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa");
@@ -65,19 +63,28 @@ public class StringPermutationsTest {
 	private Set<String> permute(String string) {
 		if (string.length() <= 1)
 			return Collections.singleton(string);
-		else {
-			Set<String> permutedSet = new HashSet<>();
-			for (int i = 0; i < string.length(); i++) {
-				Set<String> permutationsWithoutChar = permute(stringWithoutCharAt(string, i));
-				for (String s : permutationsWithoutChar) {
-					permutedSet.add(string.charAt(i) + s);
-				}
-			}
-			return permutedSet;
-		}
+		else
+			return doPermute(string);
 	}
 
-	private String stringWithoutCharAt(String string, int i) {
-		return string.substring(0, i) + string.substring(i + 1);
+	private Set<String> doPermute(String string) {
+		String stringWithoutFirstChar = string.substring(1);
+		Set<String> permutationsWithoutFirstChar = permute(stringWithoutFirstChar);
+		return generatePermutations(string.charAt(0), stringWithoutFirstChar, permutationsWithoutFirstChar);
+	}
+
+	private Set<String> generatePermutations(char firstChar, String stringWithoutFirstChar,
+			Set<String> permutationsWithoutFirstChar) {
+		Set<String> permutedSet = new HashSet<>();
+		for (String permStr : permutationsWithoutFirstChar) {
+			for (int position = 0; position <= stringWithoutFirstChar.length(); position++) {
+				permutedSet.add(stringWithCharAddedToPosition(permStr, firstChar, position));
+			}
+		}
+		return permutedSet;
+	}
+
+	private String stringWithCharAddedToPosition(String perm, char character, int position) {
+		return perm.substring(0, position) + character + perm.substring(position);
 	}
 }
