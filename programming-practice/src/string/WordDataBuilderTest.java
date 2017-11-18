@@ -8,11 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class WordDataBuilderTest {
-	private WordDataBuilderTemplate wordDataBuilder = new IterativeWordSplitAndCountCapitaliseIfOnlyWordDataBuilder();
+	private WordDataBuilder wordDataBuilder;
 
 	@Before
 	public void setUp() throws Exception {
-		wordDataBuilder = new IterativeWordSplitAndCountCapitaliseIfOnlyWordDataBuilder();
+		wordDataBuilder = new WordDataBuilder(new IterativeWordSplitter(),
+				new CountCapitaliseIfNoLowerCaseWordDataAdder());
 	}
 
 	@Test

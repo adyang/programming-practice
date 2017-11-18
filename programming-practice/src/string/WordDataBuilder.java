@@ -4,21 +4,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class WordDataBuilderTemplate {
-	public Map<String, Integer> build(String inputStr) {
-		List<String> words = splitWords(inputStr);
-		return generateWordData(words);
+public class WordDataBuilder {
+	private WordSplitter splitter;
+	private WordDataAdder adder;
+
+	public WordDataBuilder(WordSplitter splitter, WordDataAdder adder) {
+		this.splitter = splitter;
+		this.adder = adder;
 	}
 
-	protected abstract List<String> splitWords(String inputStr);
+	public Map<String, Integer> build(String inputStr) {
+		List<String> words = splitter.splitWords(inputStr);
+		return generateWordData(words);
+	}
 
 	private Map<String, Integer> generateWordData(List<String> words) {
 		Map<String, Integer> wordDataMap = new HashMap<>();
 		for (String word : words) {
-			addWord(word, wordDataMap);
+			adder.addWordToMap(word, wordDataMap);
 		}
 		return wordDataMap;
 	}
-
-	protected abstract void addWord(String word, Map<String, Integer> wordDataMap);
 }
