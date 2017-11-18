@@ -1,4 +1,4 @@
-package string;
+package string.worddata;
 
 import static org.junit.Assert.assertEquals;
 

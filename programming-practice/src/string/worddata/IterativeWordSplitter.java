@@ -1,4 +1,4 @@
-package string;
+package string.worddata;
 
 import java.util.ArrayList;
 import java.util.List;
